@@ -1,0 +1,75 @@
+// ALGORITHMIC IMPROVISATION ORCHESTRA
+
+// VERSION 0.1 OF THE MCP, NOW CALLED 'CONDUCTOR' SOFTWARE 
+// A BASIC MESSAGE PROCESSING SERVER...
+
+COMPILING IT
+=========
+cd src
+./clean.sh
+javac Conductor.java
+
+RUNNING IT
+=========
+You start it like so:
+
+cd src
+java Conductor 8080 
+
+OR
+
+java Conductor 8080 network
+
+where 8080 is the port you want it to listen on, and network tells it to accept messages from the network. Otherwise, 
+it just accepts messages from localhost. 
+
+CONFIGURING IT
+==========
+It can be configured to send and respond to different messages using the 
+config file:
+
+src/mcp.config
+
+Each line of this file describes a message that the server sends and 
+responds to, e.g. a line like:
+
+melody,4000,3
+
+tells the server to do the following:
+-Store an array of values (floats) of size 3
+-Send out the array every 4 seconds to all clients as an OSC message 
+like this:
+
+/melody array[0] array[1] array[2]
+
+-Update the array with incoming values from clients on a FIFO basis. 
+Clients can also send arrays. So in the example above, if a client sends an array of 3 numbers, the whole array will 
+be updated. 
+
+IMPLEMENTING AN IMPROVISER
+=============================
+To implement an improviser, you need to be able to send and receive OSC. 
+
+The steps to take to register to receive messages from the server are:
+
+- Connect to the server on port <8080> using UDP. 
+- Send an OSC message like this:
+
+/hello 8081
+
+(where 8081 is the port number your improviser listens on). The server will send messages back on that port. 
+
+You can then start sending messages to the conductor. It understands all 
+messages from the list in the config file. 
+
+TODO
+======
+Make it a jar
+Implement some smarts on the server so it doesn't just dumbly update its arrays with incoming data from improvisers. 
+Implement something more interesting to do with the /change message
+Implement client which is an algorithmic mixer which resets every /change and fades out highly energetic improvisers 
+Implement some improvisers!
+
+
+
+

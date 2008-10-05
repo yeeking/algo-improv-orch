@@ -1,0 +1,24 @@
+The Algorithmic Improvisation Orchestra
+========================================
+
+This project, started by the members of http://strangeloop.co.uk aims to 
+create software which enables the development of orchestras of 
+co-improvising software 'agents'. 
+
+This repository consists of the server (known as the conductor)  which 
+mediates communication between the agents using the OSC protocol plus 
+several example  agents written in various languages, including MAX/ 
+MSP, Supercollider, Pure Data and Java.  
+
+More info can be found here:
+http://strangeloop.co.uk/what-we-are-currently-up-to/algorithmic-improvisation-orchestra/
+
+CREDITS:
+
+Alex McLean
+Daniel Herbert
+Matthew Yee-King
+Mick Grierson
+Oliver Bown
+Sebastian Lexer
+
