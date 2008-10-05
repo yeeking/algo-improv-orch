@@ -1,0 +1,29 @@
+
+IMPLEMENTING AN IMPROVISER
+=============================
+To implement an improviser, you need to be able to send and receive OSC. 
+
+The steps to take to register to receive messages from the server are:
+
+- Connect to the server on port <8080> using UDP. (or whichever port you start it on...)
+
+- Send an OSC message like this:
+
+/hello 8081
+
+(where 8081 is the port number your improviser listens on). The server will send messages back on that port. 
+
+You can then start sending messages to the conductor. It understands all 
+messages from the list in the config file. Note that you always need to send the port that your improviser 
+is listening on. 
+
+A message from the conductor might look like this:
+/melody 1224, 245, 63.7, 543, 750.24
+
+- the conductor is sending the improviser 5 values from its melody memory. 
+
+A message to the conductor from an improviser might look like this:
+/melody 8081, 123.414, 77.57
+
+- an improviser is sending 5 new values to the conductor. 
+
