@@ -31,36 +31,39 @@ config file:
 src/mcp.config
 
 Each line of this file describes a message that the server sends and 
-responds to, e.g. a line like:
+responds to, e.g.:
 
-melody,4000,3
+----
+# message name,send interval,memory size,send size,random send/oldest send
+clock,2000,0,0,0
+change,20000,0,0,0
+melody,4000,100,5,random
+amp,4000,10,2,oldest
 
-tells the server to do the following:
--Store an array of values (floats) of size 3
--Send out the array every 4 seconds to all clients as an OSC message 
-like this:
+----
+line 1 says send and respond to '/clock' messages, starting with a send interval of 2 seconds. A message 
+from the conductor  might look like this:
 
-/melody array[0] array[1] array[2]
+/clock 1000
 
--Update the array with incoming values from clients on a FIFO basis. 
-Clients can also send arrays. So in the example above, if a client sends an array of 3 numbers, the whole array will 
-be updated. 
+A message to the conductor from an improviser might look like this:
 
-IMPLEMENTING AN IMPROVISER
-=============================
-To implement an improviser, you need to be able to send and receive OSC. 
+/clock 8081 500
 
-The steps to take to register to receive messages from the server are:
+- 8081 is the port the sender is listening on, used to identify the sender
+- 500 is the new send interval (and will also be the value sent out)
 
-- Connect to the server on port <8080> using UDP. 
-- Send an OSC message like this:
+line 3 says:
+- send and respond to '/melody' messages, starting with a send interval of 4 seconds
+- store 100 values in memory in a FIFO stack
+- send 5 values at a time, chosen randomly from the current 100
+- on receiving /melody messages, add the new values to the end of the memory, losing oldest values.
 
-/hello 8081
+A message from the conductor might look like this:
+/melody 1224, 245, 63.7, 543, 750.24
 
-(where 8081 is the port number your improviser listens on). The server will send messages back on that port. 
-
-You can then start sending messages to the conductor. It understands all 
-messages from the list in the config file. 
+A message to the conductor from an improviser might look like this:
+/melody 8081, 123.414, 77.57
 
 TODO
 ======
