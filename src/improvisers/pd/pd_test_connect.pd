@@ -1,4 +1,4 @@
-#N canvas 476 467 808 682 16;
+#N canvas 256 189 808 682 16;
 #X obj 58 146 sendOSC;
 #X obj 174 224 bng 15 250 50 0 empty empty empty 17 7 0 10 -262144
 -1 -1;
@@ -18,18 +18,18 @@
 #X floatatom 302 498 5 0 0 0 - - -;
 #X floatatom 328 524 5 0 0 0 - - -;
 #X floatatom 389 542 5 0 0 0 - - -;
-#X msg 72 88 send /melody 200 400 500 600 800;
 #X obj 54 260 print;
 #X obj 108 197 dumpOSC 8083;
 #X msg 67 45 send /hello 8083;
-#X msg 60 11 connect 192.168.1.67 8080;
-#X text 330 13 connect to the conductor;
+#X text 304 11 connect to the conductor;
 #X text 256 45 register to receive message on port 8083 (see dumpOSC)
 ;
-#X text 411 90 tell the conductor my melody;
-#X text 306 124 change the tempo;
+#X text 467 84 tell the conductor my melody;
+#X text 348 128 change the tempo;
 #X text 248 203 receive on 8083;
-#X msg 130 122 send /clock 250;
+#X msg 60 11 connect localhost 8080;
+#X msg 72 88 send /melody 8083 200 400 500 600 800;
+#X msg 130 122 send /clock 8083 250;
 #X connect 2 0 0 0;
 #X connect 6 0 3 0;
 #X connect 6 1 4 0;
@@ -44,10 +44,10 @@
 #X connect 8 0 6 0;
 #X connect 8 1 9 0;
 #X connect 8 2 10 0;
-#X connect 17 0 0 0;
-#X connect 19 0 1 0;
-#X connect 19 0 8 0;
-#X connect 19 0 18 0;
-#X connect 20 0 0 0;
-#X connect 21 0 0 0;
+#X connect 18 0 1 0;
+#X connect 18 0 8 0;
+#X connect 18 0 17 0;
+#X connect 19 0 0 0;
+#X connect 25 0 0 0;
+#X connect 26 0 0 0;
 #X connect 27 0 0 0;

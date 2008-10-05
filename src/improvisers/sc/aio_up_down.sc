@@ -2,6 +2,8 @@
 // - speed up and slow dow the time
 // - play a synth on the clock
 
+var mode = 1;
+
 // create a simple synth
 SynthDef("ping", {
   Out.ar(0, 
@@ -10,8 +12,6 @@ SynthDef("ping", {
 	));
 }).send(s);
 
-
-var mode = 1;
 // create a responder for clock messages from the conductor
 ~clock = OSCresponderNode(nil, '/clock', {arg time, responder, msg;
   var interval;
@@ -20,7 +20,9 @@ var mode = 1;
   if (interval < 0, {mode = 0});
   if (interval > 1000, {mode = 1});
   interval.postln;
-  ~conductor.sendMsg("/clock", interval);
+  // ... note how the first value we send it our port number. This
+  // allows the conductor to keep track of who is sending what
+  ~conductor.sendMsg("/clock", 57120, interval);
   Synth("ping");
 }).add;
 

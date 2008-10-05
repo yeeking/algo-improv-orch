@@ -1,0 +1,53 @@
+K 25
+svn:wc:ra_dav:version-url
+V 58
+/svn/beads/!svn/ver/200/Trunk/src/com/olliebown/beads/data
+END
+Sample.java
+K 25
+svn:wc:ra_dav:version-url
+V 70
+/svn/beads/!svn/ver/197/Trunk/src/com/olliebown/beads/data/Sample.java
+END
+StaticBuffer.java
+K 25
+svn:wc:ra_dav:version-url
+V 76
+/svn/beads/!svn/ver/164/Trunk/src/com/olliebown/beads/data/StaticBuffer.java
+END
+SawBuffer.java
+K 25
+svn:wc:ra_dav:version-url
+V 73
+/svn/beads/!svn/ver/164/Trunk/src/com/olliebown/beads/data/SawBuffer.java
+END
+Pitch.java
+K 25
+svn:wc:ra_dav:version-url
+V 69
+/svn/beads/!svn/ver/181/Trunk/src/com/olliebown/beads/data/Pitch.java
+END
+SineBuffer.java
+K 25
+svn:wc:ra_dav:version-url
+V 74
+/svn/beads/!svn/ver/164/Trunk/src/com/olliebown/beads/data/SineBuffer.java
+END
+HanningWindow.java
+K 25
+svn:wc:ra_dav:version-url
+V 77
+/svn/beads/!svn/ver/114/Trunk/src/com/olliebown/beads/data/HanningWindow.java
+END
+SampleManager.java
+K 25
+svn:wc:ra_dav:version-url
+V 77
+/svn/beads/!svn/ver/185/Trunk/src/com/olliebown/beads/data/SampleManager.java
+END
+SegmentedSample.java
+K 25
+svn:wc:ra_dav:version-url
+V 79
+/svn/beads/!svn/ver/200/Trunk/src/com/olliebown/beads/data/SegmentedSample.java
+END

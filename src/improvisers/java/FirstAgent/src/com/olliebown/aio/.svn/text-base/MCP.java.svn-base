@@ -1,0 +1,123 @@
+package com.olliebown.aio;
+
+import java.io.IOException;
+import java.net.InetSocketAddress;
+import java.net.SocketAddress;
+import java.util.Hashtable;
+import com.olliebown.beads.analysis.MFCC;
+import com.olliebown.beads.core.AudioContext;
+import com.olliebown.beads.core.Bead;
+import com.olliebown.beads.ugens.Clock;
+import de.sciss.net.OSCListener;
+import de.sciss.net.OSCMessage;
+import de.sciss.net.OSCPacket;
+import de.sciss.net.OSCServer;
+
+
+public class MCP implements OSCListener {
+
+	private class Agent {
+		//an agent has an IP address or OSC address and some evaluative stuff
+	}
+	
+//	private class State {  //this was just an idea of how the MCP might handle crazier data
+//		float tempo;
+//		int tonic;
+//		int key;
+//		float craziness;
+//	}
+	
+	private Hashtable<SocketAddress, Agent> agents;
+	private OSCServer oscServer;
+	private AudioContext ac;
+	private Clock clock;
+	private int listeningPort = 7777;
+	//etc....
+	
+	
+	
+	public MCP() throws IOException {
+		oscServer = OSCServer.newUsing(OSCServer.UDP, listeningPort);
+		oscServer.addOSCListener(this);
+		agents = new Hashtable<SocketAddress, Agent>();
+		oscServer.start();
+		//set up audio stuff
+		ac = new AudioContext(512, 1500);
+		clock = new Clock(ac, 200f);
+//		clock.setClick(true);
+		clock.addMessageListener(new Bead() {
+			int count = 0;
+			public void message(Bead bead) {
+				System.out.println("Sending: count=" + count + ", interval=" + clock.getIntervalEnvelope().getValue());
+				OSCMessage clockPacket = new OSCMessage("tick", new Object[] {new Integer(count++), new Float(clock.getIntervalEnvelope().getValue())});
+				
+				sendAll(clockPacket);
+			}
+		});
+		ac.getRoot().addDependent(clock);
+		ac.start();
+	}
+
+	private void addAgent(SocketAddress sender) {
+		Agent newAgent = new Agent();
+		agents.put(sender, newAgent);
+	}
+
+	private void removeAgent(SocketAddress sender) {
+		agents.remove(sender);
+	}
+	
+	public void messageReceived(OSCMessage msg, SocketAddress sender, long time) {
+		System.out.println("MCP has received a message");
+		System.out.println("-- Sender " + ((InetSocketAddress)sender).getPort() + " " + ((InetSocketAddress)sender).getHostName());
+		System.out.println("-- Message " + msg.getName());
+		if(msg.getName().equals("hello")) {
+			int port = (Integer)msg.getArg(0);
+			InetSocketAddress agentAddress = new InetSocketAddress(((InetSocketAddress)sender).getHostName(), port);
+			addAgent(agentAddress);
+		} else if(msg.getName().equals("goodbye")) {
+			int port = (Integer)msg.getArg(0);
+			InetSocketAddress agentAddress = new InetSocketAddress(((InetSocketAddress)sender).getHostName(), port);
+			removeAgent(agentAddress);
+		}else if(msg.getName().startsWith("agent/statement")) {
+			
+			if(msg.getName().equals("agent/statement/key")) {	
+				//just an example
+			}
+				
+		} else if(msg.getName().startsWith("agent/request")) {
+			
+			if(msg.getName().equals("agent/request/tempo")) {	
+				//just an example
+			}
+		}
+//		else if etc..
+	}
+	
+	public void sendAll(OSCPacket msg) {
+//		System.out.println(msg.toString());
+		for(SocketAddress s : agents.keySet()) {
+			try {
+				oscServer.send(msg, s);
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+	}
+	
+	public static void main(String[] args) throws IOException {
+		MCP mcp = new MCP();
+//		System.out.println("MCP has OSC server running at: " + mcp.oscServer.getLocalAddress().getHostName() + " " + mcp.oscServer.getLocalAddress().getAddress().getHostAddress() + " " + mcp.oscServer.getLocalAddress().getPort());
+//		
+//		OSCServer os = OSCServer.newUsing(OSCServer.UDP, 7778);
+//		os.addOSCListener(new OSCListener() {
+//			public void messageReceived(OSCMessage msg, SocketAddress sender, long time) {
+//				System.out.println(msg.getName() + " " + msg.getArg(0));
+//			}
+//		});
+//		os.start();
+//		os.send(new OSCMessage("hello", new Integer[] {7778}), mcp.oscServer.getLocalAddress());
+	}
+
+}

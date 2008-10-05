@@ -22,11 +22,15 @@ SynthDef("sine", {arg freq;
   };
 }).add;
 
-// send notes to the conductor on the clock
-~melody_send = OSCresponderNode(nil, '/clock', {arg time, responder, msg;
-  // c major
-  ~conductor2.sendMsg("/melody", ([48, 50, 52, 53, 55, 57].choose.midicps)*([1, 2, 4].choose));
-}).add;
+
+// send notes into the conductor using a routine
+// c major ... note how the first value we send it our port
+// number. This allows the conductor to keep track of who is sending
+// what
+~send_notes = {inf.do{
+  ~conductor.sendMsg("/melody", 57120, ([48, 50, 52, 53, 55, 57].choose.midicps)*([1, 2, 4].choose));
+  0.5.wait;
+}}.fork;
 
 // read notes back out from the conductor (/melody) and store them to ~freqs
 ~melody_rec = OSCresponderNode(nil, '/melody', {arg time, responder, msg;
@@ -37,4 +41,4 @@ SynthDef("sine", {arg freq;
 // stop responding
 ~clock2.remove;
 ~melody_rec.remove;
-~melody_send.remove;
+~send_notes.stop;

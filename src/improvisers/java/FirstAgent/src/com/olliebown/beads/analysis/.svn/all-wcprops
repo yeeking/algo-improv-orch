@@ -1,0 +1,59 @@
+K 25
+svn:wc:ra_dav:version-url
+V 62
+/svn/beads/!svn/ver/197/Trunk/src/com/olliebown/beads/analysis
+END
+FFT.java
+K 25
+svn:wc:ra_dav:version-url
+V 71
+/svn/beads/!svn/ver/175/Trunk/src/com/olliebown/beads/analysis/FFT.java
+END
+PowerSpectrum.java
+K 25
+svn:wc:ra_dav:version-url
+V 81
+/svn/beads/!svn/ver/175/Trunk/src/com/olliebown/beads/analysis/PowerSpectrum.java
+END
+MelSpectrum.java
+K 25
+svn:wc:ra_dav:version-url
+V 79
+/svn/beads/!svn/ver/175/Trunk/src/com/olliebown/beads/analysis/MelSpectrum.java
+END
+Frequency.java
+K 25
+svn:wc:ra_dav:version-url
+V 77
+/svn/beads/!svn/ver/167/Trunk/src/com/olliebown/beads/analysis/Frequency.java
+END
+OnsetDetector.java
+K 25
+svn:wc:ra_dav:version-url
+V 81
+/svn/beads/!svn/ver/184/Trunk/src/com/olliebown/beads/analysis/OnsetDetector.java
+END
+Peaks.java
+K 25
+svn:wc:ra_dav:version-url
+V 73
+/svn/beads/!svn/ver/197/Trunk/src/com/olliebown/beads/analysis/Peaks.java
+END
+SpectralCentroid.java
+K 25
+svn:wc:ra_dav:version-url
+V 84
+/svn/beads/!svn/ver/156/Trunk/src/com/olliebown/beads/analysis/SpectralCentroid.java
+END
+MFCC.java
+K 25
+svn:wc:ra_dav:version-url
+V 72
+/svn/beads/!svn/ver/170/Trunk/src/com/olliebown/beads/analysis/MFCC.java
+END
+Power.java
+K 25
+svn:wc:ra_dav:version-url
+V 73
+/svn/beads/!svn/ver/169/Trunk/src/com/olliebown/beads/analysis/Power.java
+END

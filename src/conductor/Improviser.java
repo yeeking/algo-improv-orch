@@ -1,35 +1,67 @@
+///////////////////////////////////////////////////////////////////////////////
+// Improviser.java							     //
+// 									     //
+// Copyright (c) 2008 Strange Loop. All rights reserved.		     //
+//  									     //
+//  									     //
+//   This program is free software: you can redistribute it and/or modify    //
+//   it under the terms of the GNU General Public License as published by    //
+//   the Free Software Foundation, either version 3 of the License, or	     //
+//   (at your option) any later version.				     //
+//     									     //
+//     This program is distributed in the hope that it will be useful,	     //
+//     but WITHOUT ANY WARRANTY; without even the implied warranty of	     //
+//     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the	     //
+//     GNU General Public License for more details.			     //
+//     									     //
+//     You should have received a copy of the GNU General Public License     //
+//     along with this program.  If not, see <http://www.gnu.org/licenses/>. //
+///////////////////////////////////////////////////////////////////////////////
+
+
 import de.sciss.net.*;
 import java.net.InetSocketAddress;
 import java.io.IOException;
 import java.net.SocketAddress;
+import java.util.HashMap;
+import java.util.Set;
+import java.util.Iterator;
 
-// Represents an improvising agent. 
-// Allows messages to be sent to improvising agents.
-// Created when an agent sends a hello message to the server
-
+/**
+ * Represents an improvising agent. 
+ * Allows messages to be sent to improvising agents.
+ * Created when an agent sends a hello message to the server
+ *
+ * @author <a href="mailto:matthew@hyde">Matthew Yee-King</a>
+ * @version 1.0
+ */
 public class Improviser{
 
   private Conductor conductor;
   private OSCClient client;
-  private final Object sync;
-  private OSCBundle bndl1;
-  private OSCBundle bndl2;
-  private Integer nodeID;
 
   private String address;
   private int port;
   private long signInTime;
   private boolean dead;
 
-  // create a representation for a remote improviser sitting on the sent address and port
-  // 
+  private HashMap<String,Integer> messageCounts;
+
+  /**
+   * create a representation for a remote improviser sitting on the sent address and port
+   *
+   * @param address a <code>String</code> value
+   * @param port an <code>int</code> value
+   * @param conductor a <code>Conductor</code> value
+   */
   public Improviser(String address, int port, Conductor conductor){
     System.out.println("Improviser:construct address:"+address+" port:"+port);
     this.conductor = conductor;
     this.address = address;
     this.port = port;
     
-    sync = new Object();
+    this.resetMessageCounts();
+
     client = null;
     try {
         client = OSCClient.newUsing( OSCClient.UDP );    // create UDP client with any free port number
@@ -40,25 +72,50 @@ public class Improviser{
         e1.printStackTrace();
         return;
     }
-
-    
-    // register a listener for incoming osc messages
-    client.addOSCListener( new OSCListener() {
-        public void messageReceived( OSCMessage m, SocketAddress addr, long time )
-        {
-	  System.out.println("Improviser: message received: "+m.getName()+" time "+time);
-	  // if we get the /n_end message, wake up the main thread 
-	  // ; note: we should better also check for the node ID to make sure
-	  // the message corresponds to our synth
-	  if( m.getName().equals( "/n_end" )) {
-	    synchronized( sync ) {
-	      sync.notifyAll();
-	    }
-	  }
-        }
-      });
     dead = false;
-    //testClient();
+  }
+
+  /**
+   * This method is used to decide if messages from this improviser
+   * should be processed by the conductor. 
+   *
+   */
+  public boolean canSendMessages(){
+    // algorithm for this TBC....
+    // for now, look for a count over 100..
+    for (Integer i : messageCounts.values()) {
+      if (i.intValue() > 100) {
+	System.out.println("Improviser: not allowing message as count > 100");
+	return false;
+      }
+    }
+    return true;
+  }
+
+  /**
+   * When a message is received by the conductor from this improviser,
+   * this method is called to keep a count of the messages being sent
+   * by this improviser, with an aim to ignoring really 'message
+   * noisy' improvisers.
+   *
+   * @param message a <code>String</code> which is the name of the message, e.g. /clock
+   */
+  public synchronized void addToMessageCounts(String message){
+    Integer count, c;
+    count = messageCounts.get(message);
+    if (count == null) {
+      count = new Integer(1);
+    }
+    else {
+      c = count.intValue();
+      count = new Integer(c+1);
+    }
+    //System.out.println("Improviser: message "+message+" has count "+count.intValue());
+    messageCounts.put(message, count);
+  }
+
+  public synchronized void resetMessageCounts(){
+    messageCounts = new HashMap<String,Integer>();
   }
 
   public int getPort(){
@@ -85,53 +142,11 @@ public class Improviser{
       return false;
     }
   }
-
-  public void testClient(){
-       // let's see what's going out and coming in
-    client.dumpOSC( OSCChannel.kDumpBoth, System.err );
-
-    try {
-        // the /notify message tells scsynth to send info messages back to us
-        client.send( new OSCMessage( "/notify", new Object[] { new Integer( 1 )}));
-        // two bundles, one immediately (with 50ms delay), the other in 1.5 seconds
-        bndl1   = new OSCBundle( System.currentTimeMillis() + 50 );
-        bndl2   = new OSCBundle( System.currentTimeMillis() + 1550 );
-        // this is going to be the node ID of our synth
-        nodeID  = new Integer( 1001);
-        // this next messages creates the synth
-        bndl1.addPacket( new OSCMessage( "/s_new", new Object[] { "default", nodeID, new Integer( 1 ), new Integer( 0 )}));
-        // this next messages starts to releases the synth in 1.5 seconds (release time is 2 seconds)
-        bndl2.addPacket( new OSCMessage( "/n_set", new Object[] { nodeID, "gate", new Float( -(2f + 1f) )}));
-        // send both bundles (scsynth handles their respective timetags)
-        client.send( bndl1 );
-        client.send( bndl2 );
-
-        // now wait for the signal from our osc listener (or timeout in 10 seconds)
-	try {
-	  synchronized( sync ) {
-            sync.wait( 10000 );
-	  }
-	} catch (InterruptedException e) {
-
-	}
-        //catch( InterruptedException e1 ) {}
-
-        // ok, unsubscribe getting info messages
-        client.send( new OSCMessage( "/notify", new Object[] { new Integer( 0 )}));
-
-        // ok, stop the client
-        // ; this isn't really necessary as we call dispose soon
-        client.stop();
-    }
-    catch( IOException e11 ) {
-        e11.printStackTrace();
-    }
-
-  }
   
   public String toString(){
     String status = "Improviser: address: "+address+" port: "+port;
     return status;
   }
-    
+   
+ 
 }

@@ -7,6 +7,7 @@ s.quit;
 // connect to the conductor (change localhost to the IP address if
 // conductor is in network mode)
 ~conductor = NetAddr("localhost", 8080); 
+
 // request messages to be sent to us on port 57120 (the langauge port)
 ~conductor.sendMsg("/hello",  57120);
 

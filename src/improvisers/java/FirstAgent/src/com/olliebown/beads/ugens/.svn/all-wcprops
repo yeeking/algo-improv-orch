@@ -1,0 +1,107 @@
+K 25
+svn:wc:ra_dav:version-url
+V 59
+/svn/beads/!svn/ver/200/Trunk/src/com/olliebown/beads/ugens
+END
+RTInput.java
+K 25
+svn:wc:ra_dav:version-url
+V 72
+/svn/beads/!svn/ver/213/Trunk/src/com/olliebown/beads/ugens/RTInput.java
+END
+Recorder.java
+K 25
+svn:wc:ra_dav:version-url
+V 73
+/svn/beads/!svn/ver/200/Trunk/src/com/olliebown/beads/ugens/Recorder.java
+END
+DelayLine.java
+K 25
+svn:wc:ra_dav:version-url
+V 74
+/svn/beads/!svn/ver/197/Trunk/src/com/olliebown/beads/ugens/DelayLine.java
+END
+OscillatorBank.java
+K 25
+svn:wc:ra_dav:version-url
+V 79
+/svn/beads/!svn/ver/200/Trunk/src/com/olliebown/beads/ugens/OscillatorBank.java
+END
+MouseResponder.java
+K 25
+svn:wc:ra_dav:version-url
+V 79
+/svn/beads/!svn/ver/187/Trunk/src/com/olliebown/beads/ugens/MouseResponder.java
+END
+Clicker.java
+K 25
+svn:wc:ra_dav:version-url
+V 72
+/svn/beads/!svn/ver/145/Trunk/src/com/olliebown/beads/ugens/Clicker.java
+END
+Signal.java
+K 25
+svn:wc:ra_dav:version-url
+V 71
+/svn/beads/!svn/ver/186/Trunk/src/com/olliebown/beads/ugens/Signal.java
+END
+Gain.java
+K 25
+svn:wc:ra_dav:version-url
+V 69
+/svn/beads/!svn/ver/213/Trunk/src/com/olliebown/beads/ugens/Gain.java
+END
+WavePlayer.java
+K 25
+svn:wc:ra_dav:version-url
+V 75
+/svn/beads/!svn/ver/213/Trunk/src/com/olliebown/beads/ugens/WavePlayer.java
+END
+RangeLimiter.java
+K 25
+svn:wc:ra_dav:version-url
+V 77
+/svn/beads/!svn/ver/101/Trunk/src/com/olliebown/beads/ugens/RangeLimiter.java
+END
+ScalingMixer.java
+K 25
+svn:wc:ra_dav:version-url
+V 77
+/svn/beads/!svn/ver/138/Trunk/src/com/olliebown/beads/ugens/ScalingMixer.java
+END
+WarpingSamplePlayer.java
+K 25
+svn:wc:ra_dav:version-url
+V 84
+/svn/beads/!svn/ver/200/Trunk/src/com/olliebown/beads/ugens/WarpingSamplePlayer.java
+END
+Static.java
+K 25
+svn:wc:ra_dav:version-url
+V 71
+/svn/beads/!svn/ver/191/Trunk/src/com/olliebown/beads/ugens/Static.java
+END
+Add.java
+K 25
+svn:wc:ra_dav:version-url
+V 68
+/svn/beads/!svn/ver/171/Trunk/src/com/olliebown/beads/ugens/Add.java
+END
+GranularSamplePlayer.java
+K 25
+svn:wc:ra_dav:version-url
+V 85
+/svn/beads/!svn/ver/200/Trunk/src/com/olliebown/beads/ugens/GranularSamplePlayer.java
+END
+Clock.java
+K 25
+svn:wc:ra_dav:version-url
+V 70
+/svn/beads/!svn/ver/191/Trunk/src/com/olliebown/beads/ugens/Clock.java
+END
+SamplePlayer.java
+K 25
+svn:wc:ra_dav:version-url
+V 77
+/svn/beads/!svn/ver/197/Trunk/src/com/olliebown/beads/ugens/SamplePlayer.java
+END

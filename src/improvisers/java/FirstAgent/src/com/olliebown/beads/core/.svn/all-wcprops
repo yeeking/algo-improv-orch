@@ -1,0 +1,65 @@
+K 25
+svn:wc:ra_dav:version-url
+V 58
+/svn/beads/!svn/ver/207/Trunk/src/com/olliebown/beads/core
+END
+Tools.java
+K 25
+svn:wc:ra_dav:version-url
+V 69
+/svn/beads/!svn/ver/213/Trunk/src/com/olliebown/beads/core/Tools.java
+END
+AudioUtils.java
+K 25
+svn:wc:ra_dav:version-url
+V 74
+/svn/beads/!svn/ver/213/Trunk/src/com/olliebown/beads/core/AudioUtils.java
+END
+FrameFeatureExtractor.java
+K 25
+svn:wc:ra_dav:version-url
+V 85
+/svn/beads/!svn/ver/155/Trunk/src/com/olliebown/beads/core/FrameFeatureExtractor.java
+END
+InputGUI.java
+K 25
+svn:wc:ra_dav:version-url
+V 72
+/svn/beads/!svn/ver/197/Trunk/src/com/olliebown/beads/core/InputGUI.java
+END
+PowerSpectrumListener.java
+K 25
+svn:wc:ra_dav:version-url
+V 85
+/svn/beads/!svn/ver/161/Trunk/src/com/olliebown/beads/core/PowerSpectrumListener.java
+END
+AudioContext.java
+K 25
+svn:wc:ra_dav:version-url
+V 76
+/svn/beads/!svn/ver/213/Trunk/src/com/olliebown/beads/core/AudioContext.java
+END
+BeadArray.java
+K 25
+svn:wc:ra_dav:version-url
+V 73
+/svn/beads/!svn/ver/143/Trunk/src/com/olliebown/beads/core/BeadArray.java
+END
+Bead.java
+K 25
+svn:wc:ra_dav:version-url
+V 68
+/svn/beads/!svn/ver/143/Trunk/src/com/olliebown/beads/core/Bead.java
+END
+SongPart.java
+K 25
+svn:wc:ra_dav:version-url
+V 72
+/svn/beads/!svn/ver/197/Trunk/src/com/olliebown/beads/core/SongPart.java
+END
+UGen.java
+K 25
+svn:wc:ra_dav:version-url
+V 68
+/svn/beads/!svn/ver/200/Trunk/src/com/olliebown/beads/core/UGen.java
+END

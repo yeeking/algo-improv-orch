@@ -1,0 +1,103 @@
+9
+
+dir
+210
+http://www.olliebown.com/svn/beads/Trunk/src/com/olliebown/beads
+http://www.olliebown.com/svn/beads
+
+
+
+2008-09-24T11:35:12.956543Z
+210
+ollie
+
+
+svn:special svn:externals svn:needs-lock
+
+
+
+
+
+
+
+
+
+
+
+2ebb4c82-e849-0410-bb35-b480c621eb2c
+
+analysis
+dir
+
+applet
+dir
+
+core
+dir
+
+data
+dir
+
+envelopes
+dir
+
+events
+dir
+
+instruments
+dir
+
+sequencers
+dir
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+deleted
+
+test
+dir
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+deleted
+
+trash
+dir
+
+ugens
+dir
+

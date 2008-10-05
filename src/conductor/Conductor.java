@@ -1,3 +1,23 @@
+///////////////////////////////////////////////////////////////////////////////
+// Conductor.java							     //
+// 									     //
+// Copyright (c) 2008 Strange Loop. All rights reserved.		     //
+//  									     //
+//  									     //
+//   This program is free software: you can redistribute it and/or modify    //
+//   it under the terms of the GNU General Public License as published by    //
+//   the Free Software Foundation, either version 3 of the License, or	     //
+//   (at your option) any later version.				     //
+//     									     //
+//     This program is distributed in the hope that it will be useful,	     //
+//     but WITHOUT ANY WARRANTY; without even the implied warranty of	     //
+//     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the	     //
+//     GNU General Public License for more details.			     //
+//     									     //
+//     You should have received a copy of the GNU General Public License     //
+//     along with this program.  If not, see <http://www.gnu.org/licenses/>. //
+///////////////////////////////////////////////////////////////////////////////
+				
 import java.util.ArrayList;
 import java.util.Scanner;
 import java.util.HashMap;
@@ -16,7 +36,7 @@ public class Conductor {
   // sends message to clients
   //public Runnable clientSender;
 
-  private  ArrayList<Improviser>  improvisers;
+  private ArrayList<Improviser>  improvisers;
   private String[] messages;
   private boolean debug = true;
 
@@ -41,6 +61,8 @@ public class Conductor {
       String message;
       int interval;
       int memLength;
+      int sendLength;
+      String sendMode;
       // skip the first line..
       scan.nextLine();
       while (scan.hasNextLine()) {
@@ -49,9 +71,12 @@ public class Conductor {
 	message = parts[0];
 	interval = new Integer(parts[1]).intValue();
 	memLength = new Integer(parts[2]).intValue();
+	sendLength = new Integer(parts[3]).intValue();
+	sendMode = parts[4];
+
 	System.out.println("Conductor - read message '"+message+"' from the config file.");
 	if (memLength > 0) {
-	  messengers.put("/"+message, new ConductorMessagerMemory(interval, "/"+message, new Object[]{new Integer(0)}, this, memLength));
+	  messengers.put("/"+message, new ConductorMessagerMemory(interval, "/"+message, memLength, sendLength, sendMode, new Object[]{new Integer(0)}, this));
 	}
 	else {
 	  messengers.put("/"+message, new ConductorMessager(interval, "/"+message, new Object[]{new Integer(interval)}, this));
@@ -74,50 +99,72 @@ public class Conductor {
     InetSocketAddress iSaddr;
     ConductorMessager messenger;
     String messageName;
+    Improviser improviser; 
 
-    messageName = message.getName();
-    // need to work out what the hostname is
-    iSaddr = (InetSocketAddress)socketAddr;
-    address = iSaddr.getHostName();
-    System.out.println("Conductor - '"+message.getName()+"' message received from host "+address);
-    // - is it a 'hello port' message?
-    if (messageName.contains ("hello")) {
+    try {
+      messageName = message.getName();
+      // need to work out what the hostname is
+      iSaddr = (InetSocketAddress)socketAddr;
+      address = iSaddr.getHostName();
+      System.out.println("Conductor - '"+message.getName()+"' message received from host "+address);
+      // we need at least one arg as the first arg is always the port
+      // number on which the client is listening, which allows us to
+      // identify which client it is
       if (message.getArgCount() > 0) {
-	// they should send a number for argument 0
 	port = ((Number) message.getArg( 0 )).intValue();
-	addImproviser(address, port);
+	// - is it a 'hello port' message?
+	if (messageName.contains ("hello")) {
+	  addImproviser(address, port);
+	}
+	else {
+	  // see if we know about this message
+	  messenger = messengers.get(messageName);
+	  if (messenger!=null) {
+	    // we know this message
+	    improviser = getImproviser(address, port);
+	    if (improviser!=null && improviser.canSendMessages()) {
+	      // we have an improviser registered for this message
+	      // and they have not been blocked (e.g. by sending too many messages...)
+	      improviser.addToMessageCounts(message.getName());
+	      messenger.setMessageData(oscArgsToObjects(message));
+	    }
+	  }  
+	}
       }
-    }
-    
-    // now try to look up the message in the messenger hashmap
-    // - is it a melody message?
-    messenger = messengers.get(messageName);
-    if (messenger!=null) {
-      messenger.setMessageData(oscArgsToObjects(message));
+    } catch (Exception e) {
+      // this probably means there was something wrong with the
+      // message, so we just avoid the puke and do nothing
     }
   }
 
   private Object[] oscArgsToObjects(OSCMessage message){
     int argCount = message.getArgCount();
-    Object[] args = new Object[argCount];
+    // note that we skip the first arg, which is the port of the sending improviser
+    Object[] args = new Object[argCount-1];
     
-    for (int i=0;i<argCount;i++) {
-      args[i] = message.getArg(i);
+    for (int i=0;i<argCount-1;i++) {
+      args[i] = message.getArg(i+1);
     }
     return args;
+  }
+
+  private Improviser getImproviser(String address, int port){
+    for (Improviser i : improvisers) {
+      if (i.getPort() == port && i.getAddress().equals(address)) {
+	return i;
+      }
+    }
+    return null;
   }
 
   // called by the OSCServer thread to add a new improviser to the arraylist
 
   public synchronized void addImproviser(String address, int port){
-    // first check if we already have this one...
-    for (Improviser i : improvisers) {
-      if (i.getPort() == port && i.getAddress().equals(address)) {
-	return;
-      }
+    // only add if we don't have it already
+    if (getImproviser(address, port) == null) {
+      improvisers.add(new Improviser(address, port, this));    
     }
-    // no? add it
-    improvisers.add(new Improviser(address, port, this));    
+
   }
 
   // sends a message to all clients
@@ -131,6 +178,11 @@ public class Conductor {
       if (!i.isDead()) {
 	System.out.println("Conductor: Sending message "+message.getName()+" to "+i.toString());
 	test = i.sendPacket(message);
+	// special behaviour for 'change' - resets the counters
+	if (message.getName().equals("/change")) {
+	  i.resetMessageCounts();
+	}
+
 	if (test) {
 	  System.out.println("Conductor: message sending succeeded");
 	}
