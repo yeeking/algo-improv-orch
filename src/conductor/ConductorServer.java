@@ -45,7 +45,7 @@ public class ConductorServer implements Runnable{
       server.addOSCListener( new OSCListener() {
 	  public void messageReceived( OSCMessage m, SocketAddress addr, long time )
 	  {
-	    System.out.println("ConductorServer - received a message!"+m.getName());
+	    //System.out.println("ConductorServer - received a message!"+m.getName());
 	    // pass it on up...
 	    conductor.messageReceived(m, addr, time);
 	  }

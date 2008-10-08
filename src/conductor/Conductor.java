@@ -43,6 +43,7 @@ public class Conductor {
   private ConductorServer server;
   private Thread serverThread;
   private HashMap<String,ConductorMessager> messengers;
+  private HashMap <String,Integer> thresholds;
 
   public Conductor(int port, boolean loopbackMode){
     improvisers = new ArrayList<Improviser>();
@@ -50,9 +51,11 @@ public class Conductor {
     server = new ConductorServer(port, this, loopbackMode);
     serverThread = new Thread(server);
     serverThread.start();
-    // fire up the conductor messagers, which will send messages to improvisers
+    // stores the message sending objects
     messengers = new HashMap<String,ConductorMessager>();
-
+    // stores the 'messages per cycle' data for different messages,
+    // used to block OSC noise agents.
+    thresholds = new HashMap<String,Integer>();
     // read the config file
     try {
       Scanner scan = new Scanner(new File("mcp.config"));
@@ -63,6 +66,7 @@ public class Conductor {
       int memLength;
       int sendLength;
       String sendMode;
+
       // skip the first line..
       scan.nextLine();
       while (scan.hasNextLine()) {
@@ -73,8 +77,10 @@ public class Conductor {
 	memLength = new Integer(parts[2]).intValue();
 	sendLength = new Integer(parts[3]).intValue();
 	sendMode = parts[4];
-
-	System.out.println("Conductor - read message '"+message+"' from the config file.");
+	// set up the threshold hash
+	thresholds.put("/"+message, new Integer(parts[5]));
+	
+	System.out.println("Conductor - read message '"+message+"' from config file. Memory length: "+memLength+" interval "+interval+" Send length "+sendLength+" send mode "+sendMode+" allowed messages per cycle "+parts[5]);
 	if (memLength > 0) {
 	  messengers.put("/"+message, new ConductorMessagerMemory(interval, "/"+message, memLength, sendLength, sendMode, new Object[]{new Integer(0)}, this));
 	}
@@ -82,7 +88,6 @@ public class Conductor {
 	  messengers.put("/"+message, new ConductorMessager(interval, "/"+message, new Object[]{new Integer(interval)}, this));
 	}
       }
-
     } catch (Exception e) {
       System.out.println("Conductor - an error occurred reading the config file mcp.config - does it exist?");
       e.printStackTrace();
@@ -100,9 +105,11 @@ public class Conductor {
     ConductorMessager messenger;
     String messageName;
     Improviser improviser; 
+    int argCount;
 
     try {
       messageName = message.getName();
+      argCount = message.getArgCount();
       // need to work out what the hostname is
       iSaddr = (InetSocketAddress)socketAddr;
       address = iSaddr.getHostName();
@@ -110,7 +117,7 @@ public class Conductor {
       // we need at least one arg as the first arg is always the port
       // number on which the client is listening, which allows us to
       // identify which client it is
-      if (message.getArgCount() > 0) {
+      if (argCount > 0) {
 	port = ((Number) message.getArg( 0 )).intValue();
 	// - is it a 'hello port' message?
 	if (messageName.contains ("hello")) {
@@ -122,10 +129,12 @@ public class Conductor {
 	  if (messenger!=null) {
 	    // we know this message
 	    improviser = getImproviser(address, port);
-	    if (improviser!=null && improviser.canSendMessages()) {
+	    //if (improviser!=null && improviser.canSendMessages()) {
+	    if (improviser!=null && improviser.canSendMessage(messageName)) {
 	      // we have an improviser registered for this message
 	      // and they have not been blocked (e.g. by sending too many messages...)
-	      improviser.addToMessageCounts(message.getName());
+	      // - update the count (arg count -1 as the first arg is their port no.)
+	      improviser.addToMessageCounts(messageName, argCount -1);
 	      messenger.setMessageData(oscArgsToObjects(message));
 	    }
 	  }  
@@ -134,6 +143,7 @@ public class Conductor {
     } catch (Exception e) {
       // this probably means there was something wrong with the
       // message, so we just avoid the puke and do nothing
+      e.printStackTrace();
     }
   }
 
@@ -155,6 +165,10 @@ public class Conductor {
       }
     }
     return null;
+  }
+
+  public HashMap <String,Integer> getThresholds(){
+    return this.thresholds;
   }
 
   // called by the OSCServer thread to add a new improviser to the arraylist

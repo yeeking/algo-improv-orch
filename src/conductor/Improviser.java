@@ -93,6 +93,33 @@ public class Improviser{
   }
 
   /**
+   * Tests if this improviser has sent too many of the sent type of
+   * message in this cycle according to the thresholds defined in the
+   * config file.
+   *
+   * @param message a <code>String</code> value
+   * @return a <code>boolean</code> value
+   */
+  public boolean canSendMessage(String message){
+    int count, allowed;
+    Integer countI;
+    countI = messageCounts.get(message);
+    if (countI == null) {
+      return true;
+    }
+    else {
+      count = countI.intValue();
+      allowed = (conductor.getThresholds().get(message)).intValue();
+      //System.out.println("Improviser: "+message+" count is "+count+" of allowed "+allowed);
+      if (count > allowed) {
+	return false;
+      }
+    }
+    return true;
+  }
+
+
+  /**
    * When a message is received by the conductor from this improviser,
    * this method is called to keep a count of the messages being sent
    * by this improviser, with an aim to ignoring really 'message
@@ -100,15 +127,16 @@ public class Improviser{
    *
    * @param message a <code>String</code> which is the name of the message, e.g. /clock
    */
-  public synchronized void addToMessageCounts(String message){
+  public synchronized void addToMessageCounts(String message, int length){
     Integer count, c;
+    
     count = messageCounts.get(message);
     if (count == null) {
-      count = new Integer(1);
+      count = new Integer(length);
     }
     else {
       c = count.intValue();
-      count = new Integer(c+1);
+      count = new Integer(c+length);
     }
     //System.out.println("Improviser: message "+message+" has count "+count.intValue());
     messageCounts.put(message, count);

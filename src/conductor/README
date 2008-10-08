@@ -34,15 +34,21 @@ Each line of this file describes a message that the server sends and
 responds to, e.g.:
 
 ----
-# message name,send interval,memory size,send size,random send/oldest send
-clock,2000,0,0,0
-change,20000,0,0,0
-melody,4000,100,5,random
-amp,4000,10,2,oldest
+# message name,send interval,memory size,send size,random send/oldest send,max receive per cycle
+clock,2000,0,0,0,10
+change,20000,0,0,0,0
+melody,4000,100,10,random,100
+amp,4000,10,2,oldest,100
+mood,5000,10,1,random,10
 
-----
-line 1 says send and respond to '/clock' messages, starting with a send interval of 2 seconds. A message 
-from the conductor  might look like this:
+
+---- 
+
+line 1 says send and respond to '/clock' messages, starting with a
+send interval of 2 seconds. An improviser is only allowed to send 10
+of these messages per cycle. 
+
+A message from the conductor might look like this:
 
 /clock 1000
 
@@ -58,6 +64,7 @@ line 3 says:
 - store 100 values in memory in a FIFO stack
 - send 5 values at a time, chosen randomly from the current 100
 - on receiving /melody messages, add the new values to the end of the memory, losing oldest values.
+- only allow agents to send 100 messages (or 100 numbers in total) per cycle.
 
 A message from the conductor might look like this:
 /melody 1224, 245, 63.7, 543, 750.24
@@ -65,14 +72,7 @@ A message from the conductor might look like this:
 A message to the conductor from an improviser might look like this:
 /melody 8081, 123.414, 77.57
 
-TODO
-======
-Make it a jar
-Implement some smarts on the server so it doesn't just dumbly update its arrays with incoming data from improvisers. 
-Implement something more interesting to do with the /change message
-Implement client which is an algorithmic mixer which resets every /change and fades out highly energetic improvisers 
-Implement some improvisers!
-
+- this one would use 2 of the 'per cycle' count up. 
 
 
 

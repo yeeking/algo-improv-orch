@@ -5,13 +5,16 @@
 
 - enable sending of string messages (might work already, haven't tested)
 
-- enable 'send it right now' messages which an improviser can send to the server and will be immediately broadcast out to all improvisers
+MYK> I checked this out and it works. I have added a mood message to the config and an SC example. 
 
-- some sort of 'wipe memory' capability?? tho it seems you can effectively enable this by sending in a large list of numbers e.g. if memlody memory 
-size = 100 and an improviser sends in 100 numbers as a message, it does wipe the memory
+- enable 'send it right now' messages which an improviser can send to the server and will be immediately broadcast out to all improvisers
 
 - upgrade the 'message counts' feature which keeps a count of how many messages have been sent by imporovisers and ignores them after a certain 
 threshold per cycle. The problem  is that an agent can send  a single message with lots of values in it and this registers as a single message, when 
-it should count as <length of list> messages 
+it should count as <length of list> messages. 
 
+MYK> now it counts how many arguments are sent in a message 
+
+- Maybe add a value to the config file to define the threshold for a message, i.e. how many of that type of message can be sent by an improviser 
+before they are blocked till the next cycle...  e.g. lots of melody messages = good, lots of update clock messages maybe bad
 
