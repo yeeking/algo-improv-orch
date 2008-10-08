@@ -18,3 +18,4 @@ MYK> now it counts how many arguments are sent in a message
 - Maybe add a value to the config file to define the threshold for a message, i.e. how many of that type of message can be sent by an improviser 
 before they are blocked till the next cycle...  e.g. lots of melody messages = good, lots of update clock messages maybe bad
 
+MYK> I have done this as well
